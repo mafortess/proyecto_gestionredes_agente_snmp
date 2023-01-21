@@ -1,0 +1,171 @@
+MIB-8 DEFINITIONS ::= BEGIN
+
+IMPORTS
+    mib-2, OBJECT-TYPE
+        FROM SNMPv2-SMI;
+
+mib8 MODULE-IDENTITY
+    LAST-UPDATED "2711220000Z"
+    ORGANIZATION "SNMPv1 Grupo 8"
+    CONTACT-INFO
+        "Alumnos grupo 8"
+    DESCRIPTION
+        "Esta MIB se va a usar para gestionar un sistema de seguridad de acceso a zonas de un edificio"
+    REVISION "0911220000Z"
+    DESCRIPTION
+        "The initial revision of this MIB module was part of MIB-II."
+    ::= { mib-2 48 }
+
+practica OBJECT IDENTIFIER ::= {iso(1)  org(3)  dod(6)  internet(1) experimental(3) 53 8}       
+
+nombreDispositivo OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "El nombre del dispositivo"
+    ::= { practica 1 }
+
+personaContacto OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "Persona que entra o sale de la zona"
+    ::= { practica 2 }
+
+numeroPentrada OBJECT-TYPE
+    SYNTAX INTEGER
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "Numero de personas que han entrado"
+    ::= { practica 3 }
+
+numeroPsalida OBJECT-TYPE
+    SYNTAX INTEGER
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "Numero de personas que han salido"
+    ::= { practica 4 }
+
+ipDispositivo OBJECT-TYPE
+    SYNTAX IpAddress
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "Direccion IP del dispositivo"
+    ::= { practica 5 }
+
+
+historicosTable OBJECT-TYPE    --TABLA
+    SYNTAX SEQUENCE OF HistoricosEntry
+    MAX-ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "Tabla que almacena informacion sobre cada dia del año"
+    ::= { practica 6 }
+
+
+historicosEntry OBJECT-TYPE     -- FILA
+    SYNTAX HistoricosEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "Estadisticas del dia"
+    INDEX   { dia }
+    ::= { historicosTable 1}
+
+HistoricosEntry ::=				--TIPO FILA
+	SEQUENCE {
+		dia INTEGER ,
+		numEntradas INTEGER,
+		numSalidas INTEGER
+		}	
+
+dia OBJECT-TYPE
+    SYNTAX INTEGER
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "Numero del dia"
+    ::= { historicosEntry 1 }
+
+numEntradas OBJECT-TYPE
+    SYNTAX INTEGER
+    MAX-ACCESS read-write   
+    STATUS current
+    DESCRIPTION
+        "Numero de personas que entraron este dia"
+    ::= { historicosEntry 2 }
+
+numSalidas OBJECT-TYPE
+    SYNTAX INTEGER
+    MAX-ACCESS read-write    
+    STATUS current
+    DESCRIPTION
+        "Numero de personas que salieron este dia"
+    ::= { historicosEntry 3 }
+
+
+
+dispositivosTable OBJECT-TYPE  --TABLA
+    SYNTAX SEQUENCE OF DispositivosEntry
+    MAX-ACCESS not-accessible  
+    STATUS current
+    DESCRIPTION
+        "Tabla que almacena informacion sobre cada dispositivo"
+    ::= { practica 7 }
+
+
+dispositivosEntry OBJECT-TYPE  --FILA
+    SYNTAX DispositivosEntry
+    ACCESS not-accessible
+    STATUS current
+    DESCRIPTION
+        "Informacion de los dispositivos instalados"
+    INDEX   { ipDispositivos }
+    ::= { dispositivosTable 1}
+
+DispositivosEntry ::=               --TIPO FILA
+    SEQUENCE {
+        ipDispositivos IpAddress,
+        modeloDispositivo OCTET STRING,
+        tipoTarjeta OCTET STRING,
+        fechaInstalacion OCTET STRING
+    }
+
+
+ipDispositivos OBJECT-TYPE
+    SYNTAX IpAddress
+    MAX-ACCESS read-only   
+    STATUS current
+    DESCRIPTION
+        "Direccion IP del dispositivo"
+    ::= { dispositivosEntry 1 }
+
+modeloDispositivo OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-write  
+    STATUS current
+    DESCRIPTION
+        "Modelo del dispositivo"
+    ::= { dispositivosEntry 2 }
+
+tipoTarjeta OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-write    
+    STATUS current
+    DESCRIPTION
+        "Tipo de tarjeta"
+    ::= { dispositivosEntry 3 }
+
+fechaInstalacion OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-write           
+    STATUS current
+    DESCRIPTION
+        "Fecha de instalacion del dispositivo"
+    ::= { dispositivosEntry 4 }     
+END
